@@ -68,6 +68,12 @@ wb.styles do |s|
     header[:columns] << 'Thời gian công nợ (NCC)'
     header[:styles] << (s.add_style bg_info.merge(bold).deep_merge(text_center))
 
+    header[:columns] << 'Người tạo'
+    header[:styles] << (s.add_style bg_info.merge(bold).deep_merge(text_center))
+    
+    header[:columns] << 'Ngày tạo'
+    header[:styles] << (s.add_style bg_info.merge(bold).deep_merge(text_center))
+
     sheet.add_row header[:columns], style: header[:styles]
 
     # rows
@@ -134,6 +140,12 @@ wb.styles do |s|
   
       row[:columns] << (contact.init_supplier_debt_date.nil? ? nil : contact.init_supplier_debt_date.strftime('%d/%m/%Y'))
       row[:styles] << (s.add_style text_center)
+  
+      row[:columns] << contact.creator_name
+      row[:styles] << (s.add_style text_left)
+  
+      row[:columns] << contact.created_at.strftime("%d/%m/%Y")
+      row[:styles] << (s.add_style text_left)
       
       sheet.add_row row[:columns], style: row[:styles]
     end

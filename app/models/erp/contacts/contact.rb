@@ -38,6 +38,11 @@ module Erp::Contacts
       self[:init_supplier_debt_amount] = new_price.to_s.gsub(/\,/, '')
     end
 
+    # creator name
+    def creator_name
+      creator.present? ? creator.name : ''
+    end
+
     if Erp::Core.available?("payments")
       belongs_to :payment_method, class_name: "Erp::Payments::PaymentMethod", optional: true
       belongs_to :payment_term, class_name: "Erp::Payments::PaymentTerm", optional: true
