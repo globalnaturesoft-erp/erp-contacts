@@ -45,7 +45,7 @@ vi:
           titles: "Tất cả danh xưng"
           tags: "Tất cả nhãn"
   erp:
-    contacts: 
+    contacts:
       backend:
         contacts:
           create:
@@ -87,6 +87,7 @@ vi:
             address: "Địa chỉ"
             parent_contact: "Thuộc liên hệ"
             salesperson: "N.viên phụ trách"
+            note: "Ghi chú"
             contact_archived: "Đã ngưng sử dụng"
           list:
             code: "Mã liên hệ"
@@ -98,8 +99,9 @@ vi:
             address: "Địa chỉ"
             parent_contact: "Thuộc liên hệ"
             salesperson: "N.viên p.trách"
+            note: "Ghi chú"
             show: "Xem chi tiết"
-            no_matching_records_found: "Danh sách liên hệ hiện tại đang trống."            
+            no_matching_records_found: "Danh sách liên hệ hiện tại đang trống."
             archive_confirm: "Bạn chắc chắn muốn ngừng sử dụng liên hệ này?"
             unarchive_confirm: "Bạn chắc chắn muốn sử dụng lại liên hệ này?"
             delete: "Xóa liên hệ"

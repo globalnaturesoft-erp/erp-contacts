@@ -46,14 +46,14 @@
 
 <%
     actions = []
-    
+
     actions << {
         text: '<i class="fa fa-eye-slash"></i> '+t('archive'),
         url: erp_contacts.archive_all_backend_contacts_path,
         data_method: 'PUT',
         data_confirm: t('.archive_confirm')
     } if !Erp::Core.available?("ortho_k")
-    
+
     actions << {
         text: '<i class="fa fa-eye"></i> '+t('unarchive'),
         url: erp_contacts.unarchive_all_backend_contacts_path,
@@ -116,6 +116,9 @@
         },
         {
             text: t('.salesperson'), name: 'salesperson', value: true, checked: true
+        },
+        {
+            text: t('.note'), name: 'note', value: true, checked: true
         },
         {
             text: t('status'), name: 'status', value: true, checked: true

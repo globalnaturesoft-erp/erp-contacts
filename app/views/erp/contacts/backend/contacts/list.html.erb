@@ -54,6 +54,11 @@
                 <%= t('.salesperson') %>
             </th>
             <% end %>
+            <% if get_columns(params).include?("note") %>
+            <th>
+                <%= t('.note') %>
+            </th>
+            <% end %>
             <% if get_columns(params).include?("status") %>
                 <th>
                     <%= t('status') %>
@@ -127,6 +132,9 @@
                         </div>
                     <% end %>
                 </td>
+                <% end %>
+                <% if get_columns(params).include?("note") %>
+                <td><%= contact.note %></td>
                 <% end %>
                 <% if get_columns(params).include?("status") %>
                     <td>
