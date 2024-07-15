@@ -22,7 +22,7 @@ module Erp
           if Erp::Core.available?("ortho_k")
             authorize! :contacts_contacts_index, nil
           end
-          
+
           @contacts = Contact.search(params).paginate(:page => params[:page], :per_page => 10)
 
           render layout: nil
@@ -33,34 +33,34 @@ module Erp
           @product_returns = @contact.sales_product_returns
           @payment_records = Erp::Payments::PaymentRecord.all_done
             .where('erp_payments_payment_records.customer_id IN (?) OR erp_payments_payment_records.supplier_id IN (?)', @contact.id, @contact.id)
-          
+
           render layout: nil
         end
-        
+
         def history_sales_export_list
           @orders = Erp::Contacts::Contact.find(params[:contact_id]).sales_orders
-          
+
           @full_orders = @orders
-          
+
           @orders = @orders.order('order_date DESC, created_at DESC')
             .paginate(:page => params[:page], :per_page => 10)
         end
-        
+
         def history_sales_import_list
           @product_returns = Erp::Contacts::Contact.find(params[:contact_id]).sales_product_returns
-          
+
           @full_product_returns = @product_returns
-          
+
           @product_returns = @product_returns.order('date DESC, created_at DESC')
             .paginate(:page => params[:page], :per_page => 10)
         end
-        
+
         def history_payment_records_list
           @payment_records = Erp::Payments::PaymentRecord.all_done
             .where('erp_payments_payment_records.customer_id IN (?) OR erp_payments_payment_records.supplier_id IN (?)', params[:contact_id], params[:contact_id])
-          
+
           @full_payment_records = @payment_records
-          
+
           @payment_records = @payment_records.order('payment_date DESC, code DESC')
             .paginate(:page => params[:page], :per_page => 10)
         end
@@ -68,9 +68,9 @@ module Erp
         # GET /contacts/new
         def new
           @contact = Contact.new
-          
+
           authorize! :create, @contact
-          
+
           @contact.contact_type = params[:contact_type].present? ? params[:contact_type] : Contact::TYPE_PERSON
           @contact.country = Erp::Areas::Country.first # @todo re-update if the system has many countries
           @contact.parent_id = params.to_unsafe_hash[:parent_id]
@@ -87,9 +87,9 @@ module Erp
         # POST /contacts
         def create
           @contact = Contact.new(contact_params)
-          
+
           authorize! :create, @contact
-          
+
           @contact.creator = current_user
 
           if @contact.save
@@ -111,7 +111,7 @@ module Erp
         # PATCH/PUT /contacts/1
         def update
           authorize! :update, @contact
-          
+
           if @contact.update(contact_params)
             if request.xhr?
               render json: {
@@ -144,7 +144,7 @@ module Erp
 
         def archive
           authorize! :archive, @contact
-          
+
           @contact.archive
           respond_to do |format|
             format.html { redirect_to erp_contacts.backend_contact_path(@contact), notice: t('.success') }
@@ -159,7 +159,7 @@ module Erp
 
         def unarchive
           authorize! :unarchive, @contact
-          
+
           @contact.unarchive
           respond_to do |format|
             format.html { redirect_to erp_contacts.backend_contact_path(@contact), notice: t('.success') }
@@ -232,13 +232,13 @@ module Erp
               rows: (@contacts.map {|contact| [contact.contact_name, contact.contact_name, contact.contact_name] })
             }
         end
-        
+
         # export contacts list to xlsx
         def contacts_list_xlsx
           authorize! :contacts_list_xlsx, nil
-          
+
           @contacts = Contact.search(params)
-          
+
           respond_to do |format|
             format.xlsx {
               response.headers['Content-Disposition'] = 'attachment; filename="Danh sach lien he.xlsx"'
@@ -265,7 +265,7 @@ module Erp
               :init_debt_amount, :init_debt_date, :init_supplier_debt_amount, :init_supplier_debt_date,
               :contact_group_id, :country_id, :state_id, :district_id, :price_term_id, :tax_id,
               :payment_method_id, :payment_term_id, contact_ids: [], tag_ids: [],
-              :conts_cates_commission_rates_attributes => [ :id, :contact_id, :category_id, :rate, :price, :_destroy ],
+              :conts_cates_commission_rates_attributes => [ :id, :contact_id, :category_id, :rate, :price, :note, :_destroy ],
               :contact_prices_attributes => [:id, :contact_id, :category_id, :properties_value_id, :price_type,
                                               :min_quantity, :max_quantity, :price, :_destroy])
           end

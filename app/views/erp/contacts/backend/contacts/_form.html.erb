@@ -240,7 +240,7 @@
                             <a href="#tab_5_2" data-toggle="tab"> <%= t('.commission_rate') %> </a>
                         </li>
                         <% end %>
-                        
+
                         <% if Erp::Core.available?("ortho_k") %>
                             <li class="dropdown">
                                 <a href="javascript:;" class="dropdown-toggle pointer" data-toggle="dropdown"> <%= 'Cấu hình' %>
@@ -333,8 +333,11 @@
                                 <div class="col-md-2">
                                     <label><%= t('.rate') %></label>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-2">
                                     <label>Số tiền chiết khấu (VNĐ)</label>
+                                </div>
+                                <div class="col-md-3">
+                                    <label>Ghi chú</label>
                                 </div>
                             </div>
                             <%= erp_form_control("addableform", {
