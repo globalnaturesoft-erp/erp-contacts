@@ -356,7 +356,7 @@ module Erp::Contacts
         # Lock the table to prevent concurrent modifications during sequence generation
         query = Erp::Contacts::Contact.where(contact_group_id: contact_group_id)
                                       .where('created_at <= ?', created_at)
-                                      .lock('FOR UPDATE')
+                                      #.lock('FOR UPDATE')
 
         # Count existing records to determine the next sequence number
         num = query.count + 1 # Increment by 1 for the new record's sequence
