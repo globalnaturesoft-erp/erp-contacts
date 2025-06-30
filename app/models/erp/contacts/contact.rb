@@ -175,7 +175,7 @@ module Erp::Contacts
 				if global_filter[:contact_group_id].present?
 					query = query.where(contact_group_id: global_filter[:contact_group_id])
 				end
-				
+
 				if global_filter[:salesperson_id].present?
 					query = query.where(salesperson_id: global_filter[:salesperson_id])
 				end
@@ -192,7 +192,7 @@ module Erp::Contacts
 
       # add conditions to query
       query = query.where(and_conds.join(' AND ')) if !and_conds.empty?
-      
+
       # single keyword
       if params[:keyword].present?
 				keyword = params[:keyword].strip.downcase
@@ -244,7 +244,7 @@ module Erp::Contacts
       if params[:parent_id].present?
         query = query.where(parent_id: params[:parent_id])
 			end
-      
+
       if keyword.present?
 				keyword = keyword.strip.downcase
 				keyword.split(' ').each do |q|
@@ -279,7 +279,7 @@ module Erp::Contacts
     def contact_group_name
 			contact_group.present? ? contact_group.name : ''
 		end
-    
+
     # contact group code
     def contact_group_code
 			contact_group.present? ? contact_group.code : nil
@@ -311,7 +311,7 @@ module Erp::Contacts
     def self.archive_all
 			update_all(archived: true)
 		end
-    
+
     def self.all_active
 			self.where(archived: false)
 		end
@@ -325,22 +325,53 @@ module Erp::Contacts
       #@todo: hard code
       return Contact.find(self::MAIN_CONTACT_ID)
     end
-    
-    # force generate code
-    after_create :generate_code
-    def generate_code
-      # group code
-      group_code = self.contact_group_code
-      group_code = 'LH' if !group_code.present?
-      
-      query = Erp::Contacts::Contact.where(contact_group_id: self.contact_group_id)
-      
-      num = query.where('created_at <= ?', self.created_at).count
 
-      self.code = "#{group_code}-#{num.to_s.rjust(4, '0')}"
-      self.save
-		end
-    
+    # # force generate code
+    # after_create :generate_code
+    # def generate_code
+    #   # group code
+    #   group_code = self.contact_group_code
+    #   group_code = 'LH' if !group_code.present?
+
+    #   query = Erp::Contacts::Contact.where(contact_group_id: self.contact_group_id)
+
+    #   num = query.where('created_at <= ?', self.created_at).count
+
+    #   self.code = "#{group_code}-#{num.to_s.rjust(4, '0')}"
+    #   self.save
+		# end
+
+    # Callback to generate contact code after a record is created
+    after_create :generate_code
+
+    def generate_code
+      # Get the group code, default to 'LH' if not present
+      group_code = contact_group_code.presence || 'LH'
+
+      # Extract the last two digits of the current year (e.g., 2025 -> '25')
+      year_suffix = Time.current.year.to_s[-2..-1]
+
+      # Use a transaction to ensure data consistency and avoid race conditions
+      ActiveRecord::Base.transaction do
+        # Lock the table to prevent concurrent modifications during sequence generation
+        query = Erp::Contacts::Contact.where(contact_group_id: contact_group_id)
+                                      .where('created_at <= ?', created_at)
+                                      .lock('FOR UPDATE')
+
+        # Count existing records to determine the next sequence number
+        num = query.count + 1 # Increment by 1 for the new record's sequence
+
+        # Generate the contact code in the format: group_code-YYXXXX (e.g., PK-250006)
+        self.code = "#{group_code}-#{year_suffix}#{num.to_s.rjust(4, '0')}"
+
+        # Update the code column directly to avoid triggering callbacks
+        update_column(:code, self.code)
+      end
+    rescue ActiveRecord::RecordNotUnique
+      # Retry if a duplicate code is detected (rare, due to race conditions)
+      retry
+    end
+
     # Update cache search
     after_save :update_cache_search
 		def update_cache_search
