@@ -140,7 +140,7 @@ vi:
             male: "Nam"
             female: "Nữ"
             address: "Địa chỉ chi tiết"
-            enter_address: "Số nhà, đường, khu phố..."
+            enter_address: "Số nhà, đường, khu phố, thôn, xóm, ấp..."
             country: "Nước/Quốc gia"
             choose_country: "Chọn quốc gia"
             city: "Thành phố"

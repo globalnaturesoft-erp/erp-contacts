@@ -148,7 +148,7 @@
                                     }) %>
                                 </div>
                                 <div class="col-md-6">
-                                    <%= erp_form_control("dataselect", {
+                                    <%#= erp_form_control("dataselect", {
                                         name: 'contact[state_id]',
                                         value: contact.state_id,
                                         text: contact.state_name,
@@ -161,6 +161,16 @@
                                             container_selector: '.new_state',
                                             input_selector: 'input[name="state[name]"]'
                                         },
+                                        parent_control: "input[name='contact[country_id]']",
+                                        parent_id: "country_id"
+                                    }) %>
+                                    <%= erp_form_control("dataselect", {
+                                        name: 'contact[state_id]',
+                                        value: contact.state_id,
+                                        text: contact.state_name,
+                                        placeholder: t('.choose_state'),
+                                        label: t('.state'),
+                                        url: erp_areas.dataselect_backend_states_path(format: 'json'),
                                         parent_control: "input[name='contact[country_id]']",
                                         parent_id: "country_id"
                                     }) %>
